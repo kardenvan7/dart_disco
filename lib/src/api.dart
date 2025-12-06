@@ -4,7 +4,7 @@ import 'package:disco_core/disco_core.dart' as core;
 
 core.DiscoRetriever get currentScope {
   final scope = currentScopeOrNull;
-  if (scope == null) throw StateError('No DiScope found in the current zone.');
+  if (scope == null) throw Exception('No scope found.');
 
   return scope;
 }
@@ -16,11 +16,12 @@ core.DiscoRetriever? get currentScopeOrNull {
 T runScoped<T>(
   core.DiscoModule module,
   T Function() body, {
-  core.DiscoInteritanceType? inheritanceType,
+  String? name,
+  core.DiscoInheritanceType? inheritanceType,
 }) {
   final parentScope = currentScopeOrNull;
   final scope = core.DiscoScopeSync(
-    module.name,
+    name ?? 'DiscoScopeSync#${DateTime.now().microsecondsSinceEpoch}',
     parent: parentScope as core.DiscoScope?,
     inheritanceType: inheritanceType,
   );
@@ -42,11 +43,12 @@ T runScoped<T>(
 Future<T> runScopedAsync<T>(
   core.DiscoModuleAsync module,
   FutureOr<T> Function() body, {
-  core.DiscoInteritanceType? inheritanceType,
+  String? name,
+  core.DiscoInheritanceType? inheritanceType,
 }) async {
   final parentScope = currentScopeOrNull;
   final scope = core.DiscoScopeAsync(
-    module.name,
+    name ?? 'DiscoScopeAsync#${DateTime.now().microsecondsSinceEpoch}',
     parent: parentScope as core.DiscoScope?,
     inheritanceType: inheritanceType,
   );
